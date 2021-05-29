@@ -19,7 +19,11 @@ public class DB_Manager {
 
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://127.0.0.1:5432/mydb", "postgres","340uzi540");
+                    "jdbc:postgresql://" +
+                            "ec2-99-80-200-225.eu-west-1.compute.amazonaws.com:5432/" +
+                            "d8577shvne8psg?" +
+                            "password=7306b475ea05f666fd477f742426807743874cd39d59a286f64c290814f31475" +
+                            "&sslmode=require&user=tltcqmoareamau");
         } catch (SQLException e) {
             e.printStackTrace();
             //return "Connection Failed! Check output console";
@@ -178,5 +182,40 @@ public class DB_Manager {
             System.out.println((array.get(tmp - 1) + array.get(tmp))/2);
             return (array.get(tmp - 1) + array.get(tmp))/2;
         }
+    }
+
+    public void addEntry(CovidData covidData) throws SQLException {
+        Statement st = null;
+
+        String timestamp = covidData.getDate();
+        Float cases = covidData.getCases();
+        Float admissions = covidData.getAdmissions();
+        Float deaths = covidData.getDeaths();
+
+        st = connection.createStatement();
+        String sql = ("INSERT INTO coviddata(timestamp, cases, admissions, deaths) VALUES  ("+String.format("'%1$s', %2$s, %3$s, %4$s",timestamp ,cases, admissions, deaths)+");");
+        st.executeUpdate(sql);
+
+    }
+
+    public void editEntry(CovidData covidData) throws SQLException {
+        Statement st = null;
+
+        String timestamp = covidData.getDate();
+        Float cases = covidData.getCases();
+        Float admissions = covidData.getAdmissions();
+        Float deaths = covidData.getDeaths();
+
+        st = connection.createStatement();
+        String sql = ("UPDATE coviddata SET " +  String.format("cases = %1$s, admissions = %2$s, deaths = %3$s" ,cases, admissions, deaths) + " WHERE timestamp = '" + timestamp + "';");
+        st.executeUpdate(sql);
+    }
+
+    public void deleteEntry(String timestamp) throws SQLException {
+        Statement st = null;
+
+        st = connection.createStatement();
+        String sql = ("DELETE FROM coviddata WHERE timestamp = '"+timestamp+"';");
+        st.executeUpdate(sql);
     }
 }

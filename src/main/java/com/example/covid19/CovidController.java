@@ -1,10 +1,7 @@
 package com.example.covid19;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Array;
 import java.sql.SQLException;
@@ -70,5 +67,23 @@ public class CovidController {
 
         CovidData data = db_manager.medianOfData(startDate, endDate);
         return data;
+    }
+
+    @PostMapping("/insertData")
+    @ResponseBody
+    public void insertData(@RequestBody CovidData covidData) throws SQLException {
+        db_manager.addEntry(covidData);
+    }
+
+    @PostMapping("/alterData")
+    @ResponseBody
+    public void alterData(@RequestBody CovidData covidData) throws SQLException {
+        db_manager.editEntry(covidData);
+    }
+
+    @DeleteMapping("/deleteData")
+    @ResponseBody
+    public void deleteData(String timestamp) throws SQLException {
+        db_manager.deleteEntry(timestamp);
     }
 }
