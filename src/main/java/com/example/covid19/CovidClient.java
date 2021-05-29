@@ -12,87 +12,123 @@ import org.glassfish.jersey.client.ClientConfig;
 public class CovidClient {
     private static String baseURI = "http://localhost:8080/api";
 
-
-    /* NOTE:
-     * ----
-     * This code is "buggy" in the sense that if one calls testDelete() to delete, say, the product with ID 3,
-     * and then performs a testGet() with the same product ID, an exception will be raised and execution will stop
-     */
     public static void main(String[] args) {
-        testList();
-        testGet();
+        testgetAllData();
+        testGetData();
+        testGetAllMeans();
+        testGetMean();
+        testGetAllMedian();
+        testGetMedian();
         testAdd();
         testUpdate();
         testDelete();
-        testList();
     }
 
-    //DELETE request
-    /* NOTE:
-     * ----
-     * Line 45 issues request and gets back server response.
-     * The Response.class creates an object that carries a representation of the current instantiation of the Reponse class.
-     * As explained in the comments in the (server-side) ProductResource class, the Response class is not instantiated
-     * directly and hence there are no named instances of it to which we can refer. Instead, instantiation is performed
-     * through builders (the application of the build() method - see ProductResource class). If we want to refer to the
-     * current instantiation and get a representation of it, the Response.class object must be used.
-     *
-     * Same note applies to all request-constructing methods below.
-     */
-    private static void testDelete() {
-        WebTarget target = getWebTarget();
-        String timestamp = "2020-12-12";
-        Response response = target.path(timestamp).request()
-                .delete(Response.class);
-        System.out.println(response);
-    }
-
-    //UPDATE request
-    private static void testUpdate() {
-//        WebTarget target = getWebTarget();
-//        Product product = new Product("ZenFoneX", 100f);
-//        String productId = "4";
-//        Response response = target.path(productId).request()
-//                .put(Entity.entity(product, MediaType.APPLICATION_JSON), Response.class);
-//        System.out.println(response);
-    }
 
     //creates client object with any filters/interceptors registered with the config object (here null)
-    static WebTarget getWebTarget() {
+    static WebTarget getWebTarget(String parameter) {
         ClientConfig config = new ClientConfig();
         Client client = ClientBuilder.newClient(config);
 
         //returns baseURI (i.e. servlet URI) as target URI
-        return client.target(baseURI);
+        return client.target(baseURI + parameter);
     }
 
     //GET all request
-    static void testList() {
-        WebTarget target = getWebTarget();
+    static void testgetAllData() {
+        WebTarget target = getWebTarget("/getAllData");
 
-        String response = target.request().accept(MediaType.APPLICATION_JSON).get(String.class);
+        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
 
         System.out.println(response);
     }
 
-    //GET ID request
-    static void testGet() {
-//        WebTarget target = getWebTarget();
-//        String productId = "2";
-//        Product product = target.path(productId)
-//                .request().accept(MediaType.APPLICATION_JSON)
-//                .get(Product.class);
-//
-//        System.out.println(product);
+
+    static void testGetData() {
+        WebTarget target = getWebTarget("/getData");
+        String startDate = "2020-12-12";
+        String endDate = "2020-12-13";
+
+        Response response = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
+                .request().accept(MediaType.APPLICATION_JSON)
+                .get(Response.class);
+
+        System.out.println(response);
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //MEANS
+    static void testGetAllMeans() {
+        WebTarget target = getWebTarget("/getAllMeans");
+
+        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
+
+        System.out.println(response);
+    }
+
+
+    static void testGetMean() {
+        WebTarget target = getWebTarget("/getMean");
+        String startDate = "2020-12-12";
+        String endDate = "2020-12-13";
+
+        Response covidData = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
+                .request().accept(MediaType.APPLICATION_JSON)
+                .get(Response.class);
+
+        System.out.println(covidData);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //MEDIAN
+    static void testGetAllMedian() {
+        WebTarget target = getWebTarget("/getAllMedian");
+
+        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
+
+        System.out.println(response);
+    }
+
+
+    static void testGetMedian() {
+        WebTarget target = getWebTarget("/getMedian");
+        String startDate = "2020-12-12";
+        String endDate = "2020-12-13";
+
+        Response covidData = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
+                .request().accept(MediaType.APPLICATION_JSON)
+                .get(Response.class);
+
+        System.out.println(covidData);
     }
 
     //ADD request
     static void testAdd() {
-//        WebTarget target = getWebTarget();
-//        Product product = new Product("ZenFoneX", 888.88f);
-//        Response response = target.request()
-//                .post(Entity.entity(product, MediaType.APPLICATION_JSON), Response.class);
-//
-//        System.out.println(response.getLocation().toString());
+        WebTarget target = getWebTarget("/insertData");
+        CovidData covidData = new CovidData("02-16-2020", 41, 42,43);
+        Response response = target.request()
+                .post(Entity.entity(covidData, MediaType.APPLICATION_JSON), Response.class);
+
+        System.out.println(response.toString());
+    }
+
+    //UPDATE request
+    private static void testUpdate() {
+        WebTarget target = getWebTarget("/alterData/");
+        CovidData covidData = new CovidData(41, 42,43);
+        String timestamp = "12-12-2020";
+        Response response = target.path(timestamp).request()
+                .put(Entity.entity(covidData, MediaType.APPLICATION_JSON), Response.class);
+        System.out.println(response);
+    }
+
+    //DELETE request
+
+    private static void testDelete() {
+        WebTarget target = getWebTarget("");
+        String timestamp = "05-05-2021";
+        Response response = target.path(timestamp).request()
+                .delete(Response.class);
+        System.out.println(response);
     }
 }

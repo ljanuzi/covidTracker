@@ -3,12 +3,14 @@ package com.example.covid19;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 public class CovidController {
 
     private final DB_Manager db_manager;
@@ -37,7 +39,7 @@ public class CovidController {
 
     @GetMapping("/getMean")
     @ResponseBody
-    public CovidData getMean(String startDate, String endDate) throws SQLException {
+    public CovidData getMean( String startDate, String endDate) throws SQLException {
         CovidData data = db_manager.meanOfData(startDate, endDate);
         return data;
     }
@@ -71,19 +73,25 @@ public class CovidController {
 
     @PostMapping("/insertData")
     @ResponseBody
-    public void insertData(@RequestBody CovidData covidData) throws SQLException {
-        db_manager.addEntry(covidData);
+    public String insertData(@RequestBody CovidData covidData) throws SQLException {
+        try{
+            db_manager.addEntry(covidData);
+            return "Data added to the database";
+        }catch(Exception e){
+            return "Error" + e;
+        }
+
     }
 
-    @PostMapping("/alterData")
+    @PutMapping("/alterData/{timestamp}")
     @ResponseBody
-    public void alterData(@RequestBody CovidData covidData) throws SQLException {
-        db_manager.editEntry(covidData);
+    public void alterData(@PathVariable String timestamp, @RequestBody CovidData covidData) throws SQLException {
+        db_manager.editEntry(timestamp, covidData);
     }
 
-    @DeleteMapping("/deleteData")
+    @DeleteMapping("{timestamp}")
     @ResponseBody
-    public void deleteData(String timestamp) throws SQLException {
+    public void deleteData(@PathVariable String timestamp ) throws SQLException {
         db_manager.deleteEntry(timestamp);
     }
 }

@@ -198,10 +198,10 @@ public class DB_Manager {
 
     }
 
-    public void editEntry(CovidData covidData) throws SQLException {
+    public void editEntry(String date, CovidData covidData) throws SQLException {
         Statement st = null;
 
-        String timestamp = covidData.getDate();
+        String timestamp = date;/*covidData.getDate();*/
         Float cases = covidData.getCases();
         Float admissions = covidData.getAdmissions();
         Float deaths = covidData.getDeaths();
