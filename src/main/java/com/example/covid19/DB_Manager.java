@@ -94,8 +94,7 @@ public class DB_Manager {
         rs = st.executeQuery("SELECT * from covidData where timestamp>='" + startDate + "' and timestamp<='"+ endDate+"';");
 
         CovidData covidData = null;
-        ArrayList<CovidData> dataList = new ArrayList<CovidData>();;
-        String result="";
+        ArrayList<CovidData> dataList = new ArrayList<CovidData>();
         while (rs.next()) {
             covidData = new CovidData(
                     rs.getString(1),
@@ -103,8 +102,6 @@ public class DB_Manager {
                     Float.parseFloat(rs.getString(3)),
                     Float.parseFloat(rs.getString(4)));
             dataList.add(covidData);
-            result += rs.getString(1) + " " + rs.getString(2) + " " +rs.getString(3)
-                    + " " +rs.getString(4) + " " + System.lineSeparator();
         }
         return dataList;
     }

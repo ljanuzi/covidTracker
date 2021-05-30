@@ -13,15 +13,16 @@ public class CovidClient {
     private static String baseURI = "http://localhost:8080/api";
 
     public static void main(String[] args) {
-        testgetAllData();
+        testAdd();
+        testGetAllData();
         testGetData();
         testGetAllMeans();
         testGetMean();
         testGetAllMedian();
         testGetMedian();
-        testAdd();
         testUpdate();
         testDelete();
+
     }
 
 
@@ -35,10 +36,10 @@ public class CovidClient {
     }
 
     //GET all request
-    static void testgetAllData() {
+    static void testGetAllData() {
         WebTarget target = getWebTarget("/getAllData");
 
-        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
+        Response response = target.request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON).get(Response.class);
 
         System.out.println(response);
     }
@@ -50,7 +51,7 @@ public class CovidClient {
         String endDate = "2020-12-13";
 
         Response response = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
-                .request().accept(MediaType.APPLICATION_JSON)
+                .request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON)
                 .get(Response.class);
 
         System.out.println(response);
@@ -61,7 +62,7 @@ public class CovidClient {
     static void testGetAllMeans() {
         WebTarget target = getWebTarget("/getAllMeans");
 
-        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
+        Response response = target.request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON).get(Response.class);
 
         System.out.println(response);
     }
@@ -73,7 +74,7 @@ public class CovidClient {
         String endDate = "2020-12-13";
 
         Response covidData = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
-                .request().accept(MediaType.APPLICATION_JSON)
+                .request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON)
                 .get(Response.class);
 
         System.out.println(covidData);
@@ -84,7 +85,7 @@ public class CovidClient {
     static void testGetAllMedian() {
         WebTarget target = getWebTarget("/getAllMedian");
 
-        Response response = target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
+        Response response = target.request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON).get(Response.class);
 
         System.out.println(response);
     }
@@ -96,7 +97,7 @@ public class CovidClient {
         String endDate = "2020-12-13";
 
         Response covidData = target.queryParam("startDate",startDate).queryParam("endDate", endDate)
-                .request().accept(MediaType.APPLICATION_JSON)
+                .request().header("Authorization", "Basic YWRtaW46YWRtaW4=").accept(MediaType.APPLICATION_JSON)
                 .get(Response.class);
 
         System.out.println(covidData);
@@ -105,8 +106,8 @@ public class CovidClient {
     //ADD request
     static void testAdd() {
         WebTarget target = getWebTarget("/insertData");
-        CovidData covidData = new CovidData("02-16-2020", 41, 42,43);
-        Response response = target.request()
+        CovidData covidData = new CovidData("02-12-2020", 41, 42,43);
+        Response response = target.request().header("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .post(Entity.entity(covidData, MediaType.APPLICATION_JSON), Response.class);
 
         System.out.println(response.toString());
@@ -117,7 +118,7 @@ public class CovidClient {
         WebTarget target = getWebTarget("/alterData/");
         CovidData covidData = new CovidData(41, 42,43);
         String timestamp = "12-12-2020";
-        Response response = target.path(timestamp).request()
+        Response response = target.path(timestamp).request().header("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .put(Entity.entity(covidData, MediaType.APPLICATION_JSON), Response.class);
         System.out.println(response);
     }
@@ -125,9 +126,9 @@ public class CovidClient {
     //DELETE request
 
     private static void testDelete() {
-        WebTarget target = getWebTarget("");
+        WebTarget target = getWebTarget("/deleteData/");
         String timestamp = "05-05-2021";
-        Response response = target.path(timestamp).request()
+        Response response = target.path(timestamp).request().header("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .delete(Response.class);
         System.out.println(response);
     }
