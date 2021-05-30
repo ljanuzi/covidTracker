@@ -24,8 +24,7 @@ public class CovidController {
     @GetMapping("/getData")
     @ResponseBody
     public ArrayList<CovidData>  getData(String startDate, String endDate) throws SQLException {
-        ArrayList<CovidData> data = db_manager.displayData(startDate, endDate);
-        return data;
+        return db_manager.displayData(startDate, endDate);
     }
 
     @RolesAllowed({"ADMIN", "JOURNALIST"})
@@ -44,8 +43,7 @@ public class CovidController {
     @GetMapping("/getMean")
     @ResponseBody
     public CovidData getMean( String startDate, String endDate) throws SQLException {
-        CovidData data = db_manager.meanOfData(startDate, endDate);
-        return data;
+        return db_manager.meanOfData(startDate, endDate);
     }
 
     @RolesAllowed({"ADMIN", "JOURNALIST"})
@@ -88,7 +86,6 @@ public class CovidController {
         }catch(Exception e){
             return "Error" + e;
         }
-
     }
 
     @RolesAllowed("ADMIN")
